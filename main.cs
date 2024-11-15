@@ -4,34 +4,34 @@ namespace GuessTheNumber
 {
     class Program
     {
+        static string dataFilePath = "userScores.txt"; // путь к файлу сохранения
+        static Dictionary<string, List<int>> userScores = new Dictionary<string, List<int>>();
+
         static void Main(string[] args)
         {
             string username;
             Console.Write("Введите имя пользователя: ");
             username = Console.ReadLine();
 
-            if (!Authentication.RegisterUser(username))
-            {
-                //обработка ситуации если пользователь уже существует
-                Console.WriteLine("Выберите действие: 1 - начать игру, 2 - посмотреть результаты");
-                string choice = Console.ReadLine();
+            LoadScores();
 
-                if (choice == "1")
+            if (!Login.AuthenticateUser(username, userScores))
+            {
+                if (Registration.RegisterNewUser(username, userScores))
                 {
-                    //запуск игры
-                }
-                else if (choice == "2")
-                {
-                    Authentication.ShowScores(username);
+                    PlayGame(username);
                 }
             }
             else
             {
-                //запуск игры
+                PlayGame(username);
             }
 
+            SaveScores();
+        }
 
-            Console.WriteLine("Выберите уровень сложности:");
+
+        Console.WriteLine("Выберите уровень сложности:");
             Console.WriteLine("1. Легкий (число от 1 до 10, 5 попыток)");
             Console.WriteLine("2. Средний (число от 1 до 50, 7 попыток)");
             Console.WriteLine("3. Сложный (число от 1 до 100, 10 попыток)");
